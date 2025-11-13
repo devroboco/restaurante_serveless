@@ -11,3 +11,6 @@ services:
       - PERSISTENCE=1
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./.localstack:/var/lib/localstack"
+      - "./lambdas:/lambdas"
+      - "./scripts:/scripts"
