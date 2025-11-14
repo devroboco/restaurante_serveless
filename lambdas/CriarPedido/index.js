@@ -1,8 +1,14 @@
 async function handler(event, context) {
   return {
     statusCode: 200,
-    controler: 1,
-    body: JSON.stringify({ results: "Mudei o texto" }),
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify({
+      mensagem: 'Pedido criado com sucesso!',
+      pedido: 1
+    })
   };
 }
 

@@ -5,9 +5,9 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=lambda,
+      - SERVICES=lambda,apigateway
       - AWS_DEFAULT_REGION=us-east-1
-      - LS_LOG=info
+      - LS_LOG=trace
       - PERSISTENCE=1
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
