@@ -7,7 +7,8 @@ async function handler(event, context) {
     },
     body: JSON.stringify({
       mensagem: 'Pedido criado com sucesso!',
-      pedido: 1
+      pedido: 1,
+      body: event.body
     })
   };
 }

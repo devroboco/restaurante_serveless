@@ -11,3 +11,6 @@ docker exec localstack bash /scripts/deploy-lambda.sh
 
 echo "Criando a API GATEWAY"
 docker exec localstack bash /scripts/deploy-apigateway.sh
+
+echo "Criando o Dynamo"
+docker exec localstack bash /scripts/deploy-dynamo.sh

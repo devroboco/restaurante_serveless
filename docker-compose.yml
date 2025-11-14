@@ -5,7 +5,7 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=lambda,apigateway
+      - SERVICES=lambda,apigateway,dynamodb
       - AWS_DEFAULT_REGION=us-east-1
       - LS_LOG=trace
       - PERSISTENCE=1
