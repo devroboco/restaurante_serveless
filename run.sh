@@ -20,3 +20,6 @@ docker exec localstack bash /scripts/deploy-sqs.sh
 
 echo "Criando a lambda Processar Pedido"
 docker exec localstack bash /scripts/deploy-lambda-processadora.sh
+
+echo "Criando o Bucket S3"
+docker exec localstack bash /scripts/deploy-s3.sh
