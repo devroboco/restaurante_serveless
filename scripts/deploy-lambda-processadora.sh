@@ -29,7 +29,7 @@ if awslocal lambda get-function --function-name "$FUNCTION_NAME" > /dev/null 2>&
     awslocal lambda update-function-code \
         --function-name "$FUNCTION_NAME" \
         --zip-file "fileb://$ZIP_FILE" > /dev/null
-    echo "✓ Lambda atualizada"
+    echo "Lambda atualizada"
 else
     awslocal lambda create-function \
         --function-name "$FUNCTION_NAME" \
@@ -37,7 +37,7 @@ else
         --role arn:aws:iam::000000000000:role/lambda-role \
         --handler index.handler \
         --zip-file "fileb://$ZIP_FILE" > /dev/null
-    echo "✓ Lambda criada"
+    echo "Lambda criada"
 fi
 
 EXISTING_MAPPINGS=$(awslocal lambda list-event-source-mappings \
