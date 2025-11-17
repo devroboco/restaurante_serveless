@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "Lambda para criar pedidos no restaurante",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "node index.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.882.0",
+    "@aws-sdk/lib-dynamodb": "^3.932.0",
+    "uuid": "^13.0.0"
   }
 }
