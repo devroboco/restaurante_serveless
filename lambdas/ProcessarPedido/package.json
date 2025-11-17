@@ -1,0 +1,10 @@
+{
+  "name": "processar-pedido",
+  "version": "1.0.0",
+  "description": "Lambda para processar pedidos no restaurante",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node index.js"
+  }
+}

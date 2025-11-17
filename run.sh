@@ -17,3 +17,6 @@ docker exec localstack bash /scripts/deploy-dynamo.sh
 
 echo "Criando a Fila (SQS)"
 docker exec localstack bash /scripts/deploy-sqs.sh
+
+echo "Criando a lambda Processar Pedido"
+docker exec localstack bash /scripts/deploy-lambda-processadora.sh

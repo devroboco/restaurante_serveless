@@ -7,7 +7,7 @@ services:
     environment:
       - SERVICES=lambda,apigateway,dynamodb,sqs
       - AWS_DEFAULT_REGION=us-east-1
-      - LS_LOG=trace
+      - LS_LOG=info
       - PERSISTENCE=1
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
