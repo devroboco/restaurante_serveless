@@ -14,3 +14,6 @@ docker exec localstack bash /scripts/deploy-apigateway.sh
 
 echo "Criando o Dynamo"
 docker exec localstack bash /scripts/deploy-dynamo.sh
+
+echo "Criando a Fila (SQS)"
+docker exec localstack bash /scripts/deploy-sqs.sh
