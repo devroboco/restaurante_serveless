@@ -1,5 +1,7 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import PDFDocument from "pdfkit";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 const s3Client = new S3Client({
   region: "us-east-1",
@@ -13,11 +15,18 @@ const s3Client = new S3Client({
 
 const BUCKET_NAME = "pedidos-bucket";
 
-/**
- * Cria um PDF a partir dos dados do pedido
- * @param {Object} pedidoData - Dados do pedido
- * @returns {Promise<Buffer>} - Buffer do PDF gerado
- */
+const dynamoDBClient = new DynamoDBClient({
+  region: "us-east-1",
+  endpoint:
+    process.env.LOCALSTACK_ENDPOINT || "http://host.docker.internal:4566",
+  credentials: {
+    accessKeyId: "test",
+    secretAccessKey: "test",
+  },
+});
+
+const dynamoDB = DynamoDBDocumentClient.from(dynamoDBClient);
+
 async function criarPDF(pedidoData) {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument();
@@ -58,12 +67,6 @@ async function criarPDF(pedidoData) {
   });
 }
 
-/**
- * Salva o PDF no S3
- * @param {Buffer} pdfBuffer - Buffer do PDF
- * @param {string} fileName - Nome do arquivo
- * @returns {Promise<Object>} - Resultado do upload
- */
 async function salvarPDFNoS3(pdfBuffer, fileName) {
   const command = new PutObjectCommand({
     Bucket: BUCKET_NAME,
@@ -75,13 +78,44 @@ async function salvarPDFNoS3(pdfBuffer, fileName) {
   return await s3Client.send(command);
 }
 
+async function atualizarStatusPedido(pedido, novoStatus) {
+  try {
+    pedido.status = "PROCESSADO";
+
+    await dynamoDB.send(
+      new UpdateCommand({
+        TableName: "Pedidos",
+        Key: { id: pedido.id },
+        UpdateExpression: "SET #status = :status, atualizadoEm = :atualizadoEm",
+        ExpressionAttributeNames: {
+          "#status": "status",
+        },
+        ExpressionAttributeValues: {
+          ":status": novoStatus,
+          ":atualizadoEm": new Date().toISOString(),
+        },
+      })
+    );
+
+    console.log(
+      `Status do pedido ${pedido.id} atualizado para "${novoStatus}"`
+    );
+    return {
+      mensagem: `Status do pedido ${pedido.id} atualizado com sucesso!`,
+    };
+  } catch (error) {
+    console.error("Erro ao atualizar status no DynamoDB: ", error);
+    throw new Error("Erro ao atualizar o status do pedido");
+  }
+}
+
 async function handler(event) {
   try {
-    console.log("Evento recebido:", JSON.stringify(event, null, 2));
-
     for (const record of event.Records) {
       const pedidoData = JSON.parse(record.body);
       console.log("Processando pedido:", pedidoData);
+
+      await atualizarStatusPedido(pedidoData, "PROCESSADO");
 
       const pdfBuffer = await criarPDF(pedidoData);
       console.log(`PDF gerado com ${pdfBuffer.length} bytes`);
