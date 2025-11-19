@@ -6,7 +6,7 @@ import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 
 const s3Client = new S3Client({
   region: "us-east-1",
-  endpoint: "http://host.docker.internal:4566",
+  endpoint: process.env.LOCALSTACK_ENDPOINT || "http://host.docker.internal:4566",
   forcePathStyle: true,
   credentials: {
     accessKeyId: "test",
@@ -30,7 +30,7 @@ const dynamoDB = DynamoDBDocumentClient.from(dynamoDBClient);
 
 const snsClient = new SNSClient({
   region: "us-east-1",
-  endpoint: "http://host.docker.internal:4566",
+  endpoint: process.env.LOCALSTACK_ENDPOINT || "http://host.docker.internal:4566",
   credentials: {
     accessKeyId: "test",
     secretAccessKey: "test",

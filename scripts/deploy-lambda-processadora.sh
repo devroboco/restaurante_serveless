@@ -36,9 +36,17 @@ else
         --runtime nodejs20.x \
         --role arn:aws:iam::000000000000:role/lambda-role \
         --handler index.handler \
-        --zip-file "fileb://$ZIP_FILE" > /dev/null
+        --zip-file "fileb://$ZIP_FILE" \
+        --environment "Variables={LOCALSTACK_ENDPOINT=http://localstack:4566,AWS_ENDPOINT_URL=http://localstack:4566}" > /dev/null
     echo "Lambda criada"
 fi
+
+sleep 3
+echo "Atualizando variáveis de ambiente..."
+awslocal lambda update-function-configuration \
+    --function-name "$FUNCTION_NAME" \
+    --environment "Variables={LOCALSTACK_ENDPOINT=http://localstack:4566,AWS_ENDPOINT_URL=http://localstack:4566}" > /dev/null
+echo "Variáveis de ambiente atualizadas!"
 
 EXISTING_MAPPINGS=$(awslocal lambda list-event-source-mappings \
     --function-name "$FUNCTION_NAME" \
