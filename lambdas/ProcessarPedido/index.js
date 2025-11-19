@@ -2,6 +2,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import PDFDocument from "pdfkit";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 
 const s3Client = new S3Client({
   region: "us-east-1",
@@ -26,6 +27,17 @@ const dynamoDBClient = new DynamoDBClient({
 });
 
 const dynamoDB = DynamoDBDocumentClient.from(dynamoDBClient);
+
+const snsClient = new SNSClient({
+  region: "us-east-1",
+  endpoint: "http://host.docker.internal:4566",
+  credentials: {
+    accessKeyId: "test",
+    secretAccessKey: "test",
+  },
+});
+
+const TOPIC_ARN = "arn:aws:sns:us-east-1:000000000000:PedidosConcluidos";
 
 async function criarPDF(pedidoData) {
   return new Promise((resolve, reject) => {
@@ -109,6 +121,16 @@ async function atualizarStatusPedido(pedido, novoStatus) {
   }
 }
 
+async function enviarNotificacaoSNS(pedidoData) {
+  const command = new PublishCommand({
+    TopicArn: TOPIC_ARN,
+    Message: `Novo pedido concluído: ${pedidoData.id || "N/A"}`,
+    Subject: "Pedido Pronto!",
+  });
+
+  return await snsClient.send(command);
+}
+
 async function handler(event) {
   try {
     for (const record of event.Records) {
@@ -124,6 +146,9 @@ async function handler(event) {
 
       const result = await salvarPDFNoS3(pdfBuffer, fileName);
       console.log(`PDF salvo no S3: ${fileName}`, result);
+
+      const snsResult = await enviarNotificacaoSNS(pedidoData);
+      console.log("Notificação SNS enviada:", snsResult.MessageId);
 
       console.log("Pedido processado com sucesso!");
     }
