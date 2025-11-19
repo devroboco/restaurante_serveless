@@ -5,7 +5,7 @@ set -e
 echo "Deploy Lambda"
 
 FUNCTION_NAME="criarPedidos"
-LAMBDA_DIR="/lambdas/criarPedido"
+LAMBDA_DIR="/lambdas/CriarPedido"
 ZIP_FILE="/tmp/criar-pedido.zip"
 
 echo "Criando ZIP..."
