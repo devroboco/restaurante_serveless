@@ -36,8 +36,7 @@ O script de testes irá:
 
 ## Arquitetura
 
-<img width="1194" height="370" alt="Untitled-2025-11-16-0042 excalidraw" src="https://github.com/user-attachments/assets/5beca5ad-3852-42b3-9602-8d462adda0e2" />
-
+<img width="1194" height="370" alt="Untitled-2025-11-16-0042 excalidraw" src="https://github.com/user-attachments/assets/7d025704-0042-42a8-ba66-dab59971ec07" />
 
 ## Comandos Úteis
 
